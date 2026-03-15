@@ -1,0 +1,42 @@
+[
+  {
+    "id": "faq-about",
+    "question": "Tell me about Shubhanshu",
+    "intent": "about_me",
+    "answer": "Shubhanshu Rastogi is a senior QA and AI quality engineering leader with 15+ years of experience in quality strategy, test automation, and release confidence across enterprise platforms.",
+    "tags": ["about_me", "career_summary", "qa_leadership"],
+    "relatedLinks": ["https://www.linkedin.com/in/shubhanshu-rastogi"]
+  },
+  {
+    "id": "faq-leadership",
+    "question": "What kind of QA leadership experience does he have?",
+    "intent": "leadership",
+    "answer": "He has led QA programs across cross-functional teams, driving strategy, quality governance, and stakeholder alignment to improve release outcomes.",
+    "tags": ["leadership", "experience", "stakeholder_management"],
+    "relatedLinks": []
+  },
+  {
+    "id": "faq-ai-rag",
+    "question": "Has he worked on AI or RAG testing?",
+    "intent": "ai_testing",
+    "answer": "Yes. He has worked on AI and RAG quality evaluation, including retrieval quality checks, response grounding, and unsupported-answer fallback design.",
+    "tags": ["ai_testing", "rag_evaluation"],
+    "relatedLinks": []
+  },
+  {
+    "id": "faq-tools",
+    "question": "What automation tools does he specialize in?",
+    "intent": "tools_and_technologies",
+    "answer": "His toolkit includes Playwright, Selenium, API testing frameworks, CI/CD quality gates, and cloud-aligned testing workflows.",
+    "tags": ["automation", "tools_and_technologies"],
+    "relatedLinks": []
+  },
+  {
+    "id": "faq-contact",
+    "question": "How can I contact him about a role?",
+    "intent": "contact",
+    "answer": "You can reach out through the contact section for email and LinkedIn. If you share your email in this chat, Shubhanshu can follow up directly.",
+    "tags": ["contact", "recruiter_interest"],
+    "relatedLinks": []
+  }
+]

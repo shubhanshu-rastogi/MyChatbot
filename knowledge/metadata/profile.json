@@ -1,0 +1,49 @@
+{
+  "name": "Shubhanshu Rastogi",
+  "headline": "Senior QA & AI Quality Engineering Leader",
+  "location": "London, UK (placeholder)",
+  "yearsOfExperience": "15+ years",
+  "careerSummary": "Quality engineering leader focused on automation excellence, AI evaluation quality, and business-aligned release confidence.",
+  "leadershipAreas": [
+    "QA strategy and governance",
+    "Cross-functional quality leadership",
+    "Stakeholder communication and release risk alignment"
+  ],
+  "industries": [
+    "Enterprise SaaS",
+    "Platform engineering",
+    "Digital product ecosystems"
+  ],
+  "keyTools": [
+    "Playwright",
+    "Selenium",
+    "API testing frameworks",
+    "CI/CD pipelines",
+    "Cloud delivery workflows"
+  ],
+  "aiTestingStrengths": [
+    "Prompt and response quality validation",
+    "RAG retrieval and grounding evaluation",
+    "Unsupported-answer fallback design"
+  ],
+  "projectHighlights": [
+    "AgenticEvalUsingDeepeval",
+    "Talkwise AI Language Learning App",
+    "Indian Criminal Law Learning Chatbot",
+    "QnA Chatbot with Summarization",
+    "Unified Automation Framework",
+    "Playwright TS Fullstack"
+  ],
+  "workingStyle": "Collaborative, metrics-driven, and delivery-focused quality leadership.",
+  "contact": {
+    "email": "shubhanshu.rastogi@example.com",
+    "linkedIn": "https://www.linkedin.com/in/shubhanshu-rastogi",
+    "github": "https://github.com/shubhanshu-rastogi",
+    "resumeUrl": "#"
+  },
+  "contactPreferences": [
+    "Open to recruiter and leadership conversations",
+    "Best outreach via email or LinkedIn"
+  ],
+  "lastUpdated": "2026-03-10"
+}

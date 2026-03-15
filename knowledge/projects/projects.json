@@ -1,0 +1,74 @@
+[
+  {
+    "id": "project-agenticeval-using-deepeval",
+    "repository": "AgenticEvalUsingDeepeval",
+    "title": "AgenticEvalUsingDeepeval",
+    "summary": "Agentic evaluation project focused on measuring AI answer quality, grounding behavior, and reliability with DeepEval workflows.",
+    "category": "AI Evaluation",
+    "technologies": ["Python", "DeepEval", "LLM Evaluation", "RAG Testing"],
+    "whyItMatters": "Shows practical capability to evaluate non-deterministic AI systems with repeatable quality checks.",
+    "askPrompt": "What is AgenticEvalUsingDeepeval about?",
+    "tags": ["ai_testing", "rag_evaluation", "deepeval"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/AgenticEvalUsingDeepeval"
+  },
+  {
+    "id": "project-talkwise-ai-language-learning-app",
+    "repository": "Talkwise-AI-Language-learning-app",
+    "title": "Talkwise AI Language Learning App",
+    "summary": "AI-powered language learning application built around conversational assistance and guided learning flows.",
+    "category": "AI Application",
+    "technologies": ["Next.js", "TypeScript", "AI Chat", "Frontend Engineering"],
+    "whyItMatters": "Demonstrates product-focused AI implementation with strong UX orientation.",
+    "askPrompt": "What is the Talkwise AI app?",
+    "tags": ["ai_applications", "product_build", "conversation_design"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/Talkwise-AI-Language-learning-app"
+  },
+  {
+    "id": "project-indian-criminal-law-learning-chatbot",
+    "repository": "Indian-Criminal-Law-Learning-Chatbot",
+    "title": "Indian Criminal Law Learning Chatbot",
+    "summary": "Domain-focused chatbot built to support learning and exploration in Indian criminal law topics.",
+    "category": "Domain Chatbot",
+    "technologies": ["LLM", "Chatbot", "Prompting", "Knowledge Structuring"],
+    "whyItMatters": "Highlights ability to build niche, knowledge-driven assistants for specific domains.",
+    "askPrompt": "Tell me about the Indian Criminal Law Learning Chatbot project.",
+    "tags": ["chatbot", "domain_ai", "knowledge_assistant"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/Indian-Criminal-Law-Learning-Chatbot"
+  },
+  {
+    "id": "project-qna-chatbot-with-summarization",
+    "repository": "QnAChatbotwithSummarization",
+    "title": "QnA Chatbot with Summarization",
+    "summary": "Question-answering chatbot with summarization capabilities for improved response clarity and information digestion.",
+    "category": "Conversational AI",
+    "technologies": ["Python", "NLP", "Summarization", "QnA"],
+    "whyItMatters": "Combines retrieval-style QnA with concise summarization for practical end-user utility.",
+    "askPrompt": "What does the QnAChatbotwithSummarization project do?",
+    "tags": ["chatbot", "summarization", "qna"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/QnAChatbotwithSummarization"
+  },
+  {
+    "id": "project-unified-automation-framework",
+    "repository": "Unified-automation-framework",
+    "title": "Unified Automation Framework",
+    "summary": "Consolidated automation framework designed to streamline and scale quality execution across test layers.",
+    "category": "Test Automation",
+    "technologies": ["Selenium", "Playwright", "API Testing", "Framework Design"],
+    "whyItMatters": "Represents reusable engineering approach for maintainable, high-coverage automation.",
+    "askPrompt": "What automation architecture is used in Unified-automation-framework?",
+    "tags": ["automation", "qa_engineering", "framework"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/Unified-automation-framework"
+  },
+  {
+    "id": "project-playwright-ts-fullstack",
+    "repository": "Playwright-ts-fullstack",
+    "title": "Playwright TS Fullstack",
+    "summary": "Fullstack TypeScript project emphasizing Playwright-based automation and end-to-end quality coverage.",
+    "category": "Fullstack QA",
+    "technologies": ["Playwright", "TypeScript", "E2E Testing", "Fullstack"],
+    "whyItMatters": "Demonstrates practical fullstack testing depth with modern TypeScript tooling.",
+    "askPrompt": "How does Playwright-ts-fullstack showcase his automation expertise?",
+    "tags": ["playwright", "typescript", "e2e_testing"],
+    "githubUrl": "https://github.com/shubhanshu-rastogi/Playwright-ts-fullstack"
+  }
+]
