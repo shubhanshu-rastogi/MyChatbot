@@ -2,6 +2,7 @@ import { IntentDetectionResult, InputNormalization } from "@/types/chat";
 import { ProfileIntent } from "@/types/knowledge";
 
 const greetingSignals = ["hi", "hello", "hey", "hiya", "good morning", "good afternoon", "good evening"];
+const courtesySignals = ["thanks", "thank you", "thankyou", "thx", "appreciate it", "much appreciated"];
 const selfReferenceSignals = [
   "tell me about yourself",
   "about yourself",
@@ -9,6 +10,29 @@ const selfReferenceSignals = [
   "introduce yourself",
   "about you"
 ];
+const workplaceSignals = [
+  "where do you work",
+  "where does he work",
+  "where does shubhanshu work",
+  "who do you work for",
+  "which company do you work for",
+  "current company",
+  "current employer",
+  "where are you working",
+  "where is he working"
+];
+const identitySignals = [
+  "what is your name",
+  "what s your name",
+  "whats your name",
+  "your name",
+  "may i know your name",
+  "tell me your name"
+];
+const directContactSignals = ["contact", "email", "linkedin", "reach", "mail", "github"];
+const connectSignals = ["connect"];
+const personReferenceSignals = ["you", "him", "his", "shubhanshu"];
+const recruiterSignals = ["role", "opportunity", "hiring", "position", "resume", "job"];
 
 const intentSignals: Record<Exclude<ProfileIntent, "unknown">, string[]> = {
   greeting: ["hi", "hello", "hey", "greetings"],
@@ -87,6 +111,22 @@ const scoreIntent = (
 export const detectIntent = (
   normalization: InputNormalization
 ): IntentDetectionResult => {
+  const hasCourtesySignal = courtesySignals.some(
+    (signal) =>
+      normalization.normalized === signal ||
+      normalization.normalized.startsWith(`${signal} `) ||
+      normalization.normalized.endsWith(` ${signal}`) ||
+      normalization.normalized.includes(` ${signal} `)
+  );
+
+  if (hasCourtesySignal && normalization.keywordTokens.length <= 5) {
+    return {
+      intent: "greeting",
+      confidence: 0.99,
+      matchedSignals: ["courtesy"]
+    };
+  }
+
   const hasSelfReference = selfReferenceSignals.some((signal) =>
     normalization.normalized.includes(signal)
   );
@@ -111,6 +151,65 @@ export const detectIntent = (
       intent: "greeting",
       confidence: 0.99,
       matchedSignals: ["greeting"]
+    };
+  }
+
+  const hasWorkplaceSignal = workplaceSignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+  const asksWorkplaceDirectly =
+    normalization.tokens.includes("work") &&
+    (normalization.tokens.includes("where") ||
+      normalization.tokens.includes("company") ||
+      normalization.tokens.includes("employer")) &&
+    (normalization.tokens.includes("you") ||
+      normalization.tokens.includes("he") ||
+      normalization.tokens.includes("his") ||
+      normalization.tokens.includes("shubhanshu"));
+
+  if (hasWorkplaceSignal || asksWorkplaceDirectly) {
+    return {
+      intent: "experience",
+      confidence: 0.96,
+      matchedSignals: ["workplace_query"]
+    };
+  }
+
+  const hasIdentitySignal = identitySignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+  const asksForAssistantName =
+    normalization.tokens.includes("name") &&
+    (normalization.tokens.includes("you") || normalization.tokens.includes("your"));
+
+  if (hasIdentitySignal || asksForAssistantName) {
+    return {
+      intent: "about_me",
+      confidence: 0.96,
+      matchedSignals: ["assistant_identity"]
+    };
+  }
+
+  const hasDirectContactSignal = directContactSignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+  const hasConnectSignal = connectSignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+  const hasPersonReference = personReferenceSignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+  const hasRecruiterSignal = recruiterSignals.some((signal) =>
+    normalization.normalized.includes(signal)
+  );
+
+  if (hasDirectContactSignal || (hasConnectSignal && hasPersonReference)) {
+    return {
+      intent: hasRecruiterSignal ? "recruiter_interest" : "contact",
+      confidence: hasRecruiterSignal ? 0.97 : 0.95,
+      matchedSignals: hasRecruiterSignal
+        ? ["direct_contact", "recruiter_context"]
+        : ["direct_contact"]
     };
   }
 

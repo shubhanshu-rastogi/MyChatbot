@@ -20,7 +20,7 @@ export function FeaturedProjectsSection() {
         {featuredProjects.map((project, index) => (
           <motion.article
             key={project.id}
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45, delay: index * 0.04 }}

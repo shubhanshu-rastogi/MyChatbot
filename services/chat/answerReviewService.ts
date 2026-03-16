@@ -1,7 +1,8 @@
 import { DraftAnswer, InputNormalization, IntentDetectionResult, ReviewDecision } from "@/types/chat";
 import { RetrievedContext } from "@/types/knowledge";
 import { getProfileKnowledgeIndex } from "@/services/chat/profileKnowledgeService";
-import { reviewDraftWithOpenAI } from "@/services/chat/openAIAgentService";
+import { isOpenAIEnabled, reviewDraftWithOpenAI } from "@/services/chat/openAIAgentService";
+import { runtimeConfig } from "@/lib/runtimeConfig";
 
 const MIN_EVIDENCE_COUNT = 1;
 const MIN_TOP_SCORE = 7;
@@ -27,16 +28,9 @@ export const reviewDraftAnswer = async (params: {
 }): Promise<ReviewDecision> => {
   const { normalization, intent, retrieval, draft } = params;
   const flags: string[] = [];
-
-  if (intent.intent === "greeting") {
-    return {
-      approved: true,
-      reason: "Greeting responses are allowed as part of normal assistant interaction.",
-      qualityScore: 0.98,
-      shouldFallback: false,
-      flags: ["greeting"]
-    };
-  }
+  const llmEnabled = isOpenAIEnabled();
+  const llmReviewRequired = llmEnabled && runtimeConfig.chat.enforceLlmReview;
+  const isGreeting = intent.intent === "greeting";
 
   if (intent.intent === "unknown") {
     flags.push("intent_unknown");
@@ -49,7 +43,7 @@ export const reviewDraftAnswer = async (params: {
     };
   }
 
-  if (!draft.isGrounded || retrieval.evidence.length < MIN_EVIDENCE_COUNT) {
+  if (!isGreeting && (!draft.isGrounded || retrieval.evidence.length < MIN_EVIDENCE_COUNT)) {
     flags.push("no_grounded_evidence");
     return {
       approved: false,
@@ -61,7 +55,7 @@ export const reviewDraftAnswer = async (params: {
   }
 
   const topScore = retrieval.evidence[0]?.score ?? 0;
-  if (topScore < MIN_TOP_SCORE) {
+  if (!isGreeting && topScore < MIN_TOP_SCORE) {
     flags.push("low_retrieval_score");
     return {
       approved: false,
@@ -72,7 +66,7 @@ export const reviewDraftAnswer = async (params: {
     };
   }
 
-  if (draft.confidence < MIN_CONFIDENCE) {
+  if (!isGreeting && draft.confidence < MIN_CONFIDENCE) {
     flags.push("low_generator_confidence");
     return {
       approved: false,
@@ -83,7 +77,7 @@ export const reviewDraftAnswer = async (params: {
     };
   }
 
-  if (draft.text.trim().length < MIN_DRAFT_LENGTH) {
+  if (!isGreeting && draft.text.trim().length < MIN_DRAFT_LENGTH) {
     flags.push("draft_too_vague");
     return {
       approved: false,
@@ -98,7 +92,11 @@ export const reviewDraftAnswer = async (params: {
     retrieval.evidence.some((item) => item.matchedKeywords.includes(token))
   );
 
-  if (normalization.keywordTokens.length > 0 && overlapTokens.length === 0) {
+  if (
+    !isGreeting &&
+    normalization.keywordTokens.length > 0 &&
+    overlapTokens.length === 0
+  ) {
     flags.push("low_question_relevance");
     return {
       approved: false,
@@ -133,7 +131,7 @@ export const reviewDraftAnswer = async (params: {
   const evidenceNumbers = extractNumbers(evidenceText);
   const hasUnsupportedNumber = draftNumbers.some((value) => !evidenceNumbers.includes(value));
 
-  if (hasUnsupportedNumber) {
+  if (!isGreeting && hasUnsupportedNumber) {
     flags.push("unsupported_numeric_claim");
     return {
       approved: false,
@@ -167,6 +165,38 @@ export const reviewDraftAnswer = async (params: {
       shouldFallback: false,
       flags: unique([...flags, ...llmReview.flags]),
       reviewedAnswer: llmReview.reviewedAnswer
+    };
+  }
+
+  if (llmReviewRequired) {
+    if (isGreeting) {
+      return {
+        approved: true,
+        reason:
+          "Greeting/courtesy response approved with deterministic fallback because LLM reviewer was temporarily unavailable.",
+        qualityScore: 0.95,
+        shouldFallback: false,
+        flags: unique([...flags, "greeting", "llm_reviewer_unavailable_greeting_bypass"])
+      };
+    }
+
+    return {
+      approved: false,
+      reason:
+        "LLM reviewer was unavailable, so the response was not published. Please try again.",
+      qualityScore: 0.1,
+      shouldFallback: true,
+      flags: unique([...flags, "llm_review_unavailable"])
+    };
+  }
+
+  if (isGreeting) {
+    return {
+      approved: true,
+      reason: "Greeting/courtesy response approved by deterministic reviewer fallback.",
+      qualityScore: 0.98,
+      shouldFallback: false,
+      flags: unique([...flags, "greeting"])
     };
   }
 

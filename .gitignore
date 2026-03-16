@@ -29,3 +29,7 @@ yarn-error.log*
 # runtime capture data
 /data/submissions/*.json
 !/data/submissions/.keep
+
+# local RAG vector cache
+/data/rag/*.json
+!/data/rag/.keep

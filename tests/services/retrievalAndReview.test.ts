@@ -70,6 +70,25 @@ describe("retrieval and review pipeline", () => {
     expect(review.shouldFallback).toBe(false);
   });
 
+  it("handles courtesy messages without triggering fallback", async () => {
+    const normalization = normalizeInput("thanks");
+    const intent = detectIntent(normalization);
+    const retrieval = await retrieveKnowledge(normalization, intent);
+    const draft = await generateDraftAnswer(normalization, intent, retrieval);
+
+    const review = await reviewDraftAnswer({
+      normalization,
+      intent,
+      retrieval,
+      draft
+    });
+
+    expect(intent.intent).toBe("greeting");
+    expect(draft.text.toLowerCase()).toContain("welcome");
+    expect(review.approved).toBe(true);
+    expect(review.shouldFallback).toBe(false);
+  });
+
   it("answers self-intro query from profile context", async () => {
     const normalization = normalizeInput("tell me about yourself");
     const intent = detectIntent(normalization);
@@ -84,6 +103,25 @@ describe("retrieval and review pipeline", () => {
     });
 
     expect(intent.intent).toBe("about_me");
+    expect(retrieval.evidence.length).toBeGreaterThan(0);
+    expect(review.approved).toBe(true);
+    expect(review.shouldFallback).toBe(false);
+  });
+
+  it("answers workplace query from grounded profile sources", async () => {
+    const normalization = normalizeInput("where do you work?");
+    const intent = detectIntent(normalization);
+    const retrieval = await retrieveKnowledge(normalization, intent);
+    const draft = await generateDraftAnswer(normalization, intent, retrieval);
+
+    const review = await reviewDraftAnswer({
+      normalization,
+      intent,
+      retrieval,
+      draft
+    });
+
+    expect(intent.intent).toBe("experience");
     expect(retrieval.evidence.length).toBeGreaterThan(0);
     expect(review.approved).toBe(true);
     expect(review.shouldFallback).toBe(false);

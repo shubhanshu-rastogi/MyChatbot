@@ -56,8 +56,17 @@ export const generateDraftAnswer = async (
   retrieval: RetrievedContext
 ): Promise<DraftAnswer> => {
   if (intent.intent === "greeting") {
+    const isCourtesyReply =
+      normalization.normalized.includes("thank") ||
+      normalization.normalized.includes("thx") ||
+      normalization.normalized.includes("appreciate");
+
+    const text = isCourtesyReply
+      ? "You’re welcome. Happy to help."
+      : "Hi there. What would you like to know?";
+
     return {
-      text: "Hi, welcome. I can help you explore Shubhanshu's background, projects, AI testing work, and automation expertise. What would you like to start with?",
+      text,
       usedEvidenceIds: [],
       usedSources: [],
       confidence: 0.98,

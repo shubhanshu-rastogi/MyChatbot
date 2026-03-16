@@ -2,6 +2,12 @@ import { getProfileKnowledgeEntries } from "@/services/chat/profileKnowledgeServ
 import { IntentDetectionResult, InputNormalization } from "@/types/chat";
 import { RetrievedContext, RetrievalEvidence } from "@/types/knowledge";
 import { getSourcePriorityWeight } from "@/services/knowledge/sourcePriority";
+import {
+  cosineSimilarity,
+  embedQueryText,
+  getEntryEmbeddingMap
+} from "@/services/knowledge/vectorStoreService";
+import { runtimeConfig } from "@/lib/runtimeConfig";
 
 const MIN_RELEVANCE_SCORE = 6;
 const MAX_RESULTS = 5;
@@ -83,11 +89,44 @@ export const retrieveKnowledge = async (
     return {
       intent: "greeting",
       evidence: [],
-      totalCandidates: entries.length
+      totalCandidates: entries.length,
+      retrievalMode: "lexical"
     };
   }
 
-  const ranked: RetrievalEvidence[] = entries.map((entry) => {
+  const semanticEnabled = runtimeConfig.rag.enableEmbeddings && intent.intent !== "unknown";
+  const semanticWeight = Math.max(0, Math.min(runtimeConfig.rag.hybridSemanticWeight, 1));
+  const lexicalWeight = 1 - semanticWeight;
+
+  const entryEmbeddings = semanticEnabled ? await getEntryEmbeddingMap(entries) : null;
+  const queryEmbedding =
+    semanticEnabled && entryEmbeddings
+      ? await embedQueryText(`${normalization.original}\nintent:${intent.intent}`)
+      : null;
+
+  let semanticTopIds: Set<string> | null = null;
+  let semanticScoresById: Record<string, number> = {};
+
+  if (queryEmbedding && entryEmbeddings) {
+    const semanticRank = entries
+      .map((entry) => {
+        const vector = entryEmbeddings[entry.id];
+        return {
+          entryId: entry.id,
+          score: vector ? cosineSimilarity(queryEmbedding, vector) : 0
+        };
+      })
+      .sort((left, right) => right.score - left.score)
+      .slice(0, runtimeConfig.rag.vectorTopK);
+
+    semanticTopIds = new Set(semanticRank.map((item) => item.entryId));
+    semanticScoresById = semanticRank.reduce<Record<string, number>>((acc, item) => {
+      acc[item.entryId] = item.score;
+      return acc;
+    }, {});
+  }
+
+  const lexicalRanked = entries.map((entry) => {
     const { score, matchedKeywords, rationale } = calculateEvidence(
       normalization,
       intent,
@@ -100,16 +139,66 @@ export const retrieveKnowledge = async (
     );
 
     return {
+      lexicalScore: score,
       entryId: entry.id,
       sourceType: entry.sourceType,
       sourceName: entry.sourceName,
       title: entry.title,
       topic: entry.topic,
-      score,
       matchedKeywords,
       rationale,
       recruiterImportance: entry.recruiterImportance,
       priority: entry.priority
+    };
+  });
+
+  const maxLexicalScore = Math.max(
+    1,
+    ...lexicalRanked.map((item) => item.lexicalScore)
+  );
+
+  const ranked: RetrievalEvidence[] = lexicalRanked.map((item) => {
+    const rationale = [...item.rationale];
+    let finalScore = item.lexicalScore;
+    let semanticScore: number | undefined;
+    let semanticBoost: number | undefined;
+
+    if (queryEmbedding && semanticTopIds?.has(item.entryId)) {
+      const rawSemanticScore = semanticScoresById[item.entryId] ?? 0;
+      semanticScore = Number(rawSemanticScore.toFixed(4));
+
+      const semanticNormalized = Math.max(0, (rawSemanticScore + 1) / 2);
+      const lexicalNormalized = item.lexicalScore / maxLexicalScore;
+      const hybridNormalized =
+        semanticWeight * semanticNormalized + lexicalWeight * lexicalNormalized;
+
+      semanticBoost = Number(
+        (hybridNormalized * runtimeConfig.rag.semanticBoostMax).toFixed(2)
+      );
+      finalScore = Number((item.lexicalScore + semanticBoost).toFixed(2));
+
+      rationale.push(`semantic-cosine:${semanticScore.toFixed(4)}`);
+      rationale.push(`semantic-boost:${semanticBoost.toFixed(2)}`);
+    } else if (queryEmbedding) {
+      rationale.push("semantic-outside-topk");
+    } else if (semanticEnabled) {
+      rationale.push("semantic-unavailable");
+    }
+
+    return {
+      entryId: item.entryId,
+      sourceType: item.sourceType,
+      sourceName: item.sourceName,
+      title: item.title,
+      topic: item.topic,
+      score: finalScore,
+      lexicalScore: Number(item.lexicalScore.toFixed(2)),
+      semanticScore,
+      semanticBoost,
+      matchedKeywords: item.matchedKeywords,
+      rationale,
+      recruiterImportance: item.recruiterImportance,
+      priority: item.priority
     };
   });
 
@@ -127,6 +216,7 @@ export const retrieveKnowledge = async (
   return {
     intent: intent.intent,
     evidence,
-    totalCandidates: entries.length
+    totalCandidates: entries.length,
+    retrievalMode: queryEmbedding ? "hybrid" : "lexical"
   };
 };

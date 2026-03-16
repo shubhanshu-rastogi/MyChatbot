@@ -7,8 +7,10 @@ Premium recruiter-facing personal AI chatbot built with Next.js App Router, Type
 - Real grounded profile-answering layer over approved local knowledge files
 - Structured ingestion for markdown and JSON profile sources
 - Source-prioritized retrieval (metadata > FAQ > projects > resume > LinkedIn > summary)
+- Hybrid semantic RAG retrieval (OpenAI embeddings + local vector store cache + lexical fallback)
 - Mandatory agentic pipeline: normalize -> intent -> retrieve -> generate -> review -> format
 - Optional OpenAI-backed generator and reviewer agents (multi-agent flow) when API key is configured
+- Configurable LLM-review gate (`CHAT_ENFORCE_LLM_REVIEW`) so approved answers must pass reviewer agent when OpenAI is enabled
 - API hardening: request validation, max-question-length guardrails, and per-IP rate limiting
 - OpenAI resilience: timeout + retry with exponential backoff on transient failures
 - Response headers for request tracing and safer browser defaults
@@ -34,6 +36,7 @@ Premium recruiter-facing personal AI chatbot built with Next.js App Router, Type
 #### Knowledge Layer
 - `services/knowledge/knowledgeIngestionService.ts`
 - `services/knowledge/knowledgeIndexService.ts`
+- `services/knowledge/vectorStoreService.ts`
 - `services/knowledge/sourcePriority.ts`
 
 #### Chat Orchestration Layer
@@ -100,6 +103,7 @@ These are ingested into a normalized internal schema (`KnowledgeEntry`) with fie
    - `recruiter_interest`
    - `unknown`
 4. Retrieval scores entries using:
+   - semantic similarity (embeddings + cosine on local vector cache)
    - intent match
    - keyword/tag overlap
    - recruiter importance
@@ -144,6 +148,14 @@ When enabled:
    OPENAI_TIMEOUT_MS=20000
    OPENAI_MAX_RETRIES=2
    OPENAI_RETRY_BASE_DELAY_MS=350
+   RAG_ENABLE_EMBEDDINGS=true
+   RAG_EMBEDDING_MODEL=text-embedding-3-small
+   RAG_VECTOR_STORE_PATH=data/rag/vector-store.json
+   RAG_EMBEDDING_BATCH_SIZE=20
+   RAG_HYBRID_SEMANTIC_WEIGHT=0.65
+   RAG_SEMANTIC_BOOST_MAX=8
+   RAG_VECTOR_TOP_K=8
+   CHAT_ENFORCE_LLM_REVIEW=true
    CHAT_MAX_QUESTION_LENGTH=600
    CHAT_RATE_LIMIT_WINDOW_MS=60000
    CHAT_RATE_LIMIT_MAX_REQUESTS=30

@@ -43,6 +43,9 @@ export type RetrievalEvidence = {
   title: string;
   topic: ProfileIntent;
   score: number;
+  lexicalScore?: number;
+  semanticScore?: number;
+  semanticBoost?: number;
   matchedKeywords: string[];
   rationale: string[];
   recruiterImportance: number;
@@ -58,4 +61,5 @@ export type RetrievedContext = {
   intent: ProfileIntent;
   evidence: RetrievalEvidence[];
   totalCandidates: number;
+  retrievalMode?: "lexical" | "hybrid";
 };

@@ -39,7 +39,7 @@ export function AssistantHeroSection() {
       <div className="grid gap-10 xl:grid-cols-[0.95fr_1.05fr] xl:items-start">
         <div>
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
             className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent-300/30 bg-accent-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-accent-200"
@@ -49,7 +49,7 @@ export function AssistantHeroSection() {
           </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.04 }}
             className="text-4xl font-semibold leading-tight text-white md:text-5xl"
@@ -58,7 +58,7 @@ export function AssistantHeroSection() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.08 }}
             className="mt-4 text-lg text-slate-200 md:text-2xl"
@@ -67,7 +67,7 @@ export function AssistantHeroSection() {
           </motion.p>
 
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.12 }}
             className="mt-5 max-w-xl text-sm leading-relaxed text-slate-300 md:text-base"
@@ -77,7 +77,7 @@ export function AssistantHeroSection() {
           </motion.p>
 
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.16 }}
             className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400"
@@ -86,7 +86,7 @@ export function AssistantHeroSection() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-8 flex flex-wrap gap-2"
@@ -108,7 +108,7 @@ export function AssistantHeroSection() {
                 <motion.button
                   key={card.title}
                   type="button"
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: 0.22 + index * 0.06 }}
                   onClick={() => emitAssistantPrompt(card.prompt)}
@@ -124,7 +124,7 @@ export function AssistantHeroSection() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.14 }}
           className="relative"

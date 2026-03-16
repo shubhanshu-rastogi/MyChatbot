@@ -17,7 +17,7 @@ export function CareerHighlightsSection() {
         {careerMetrics.map((metric, index) => (
           <motion.div
             key={metric.label}
-            initial={{ opacity: 0, y: 16 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
@@ -34,7 +34,7 @@ export function CareerHighlightsSection() {
         {careerHighlights.map((group, index) => (
           <motion.article
             key={group.section}
-            initial={{ opacity: 0, y: 18 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45, delay: index * 0.04 }}

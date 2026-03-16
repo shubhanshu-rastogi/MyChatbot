@@ -17,7 +17,7 @@ export function ProfessionalSummarySection() {
         {professionalSummaryBlocks.map((block, index) => (
           <motion.article
             key={block.id}
-            initial={{ opacity: 0, y: 18 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45, delay: index * 0.05 }}

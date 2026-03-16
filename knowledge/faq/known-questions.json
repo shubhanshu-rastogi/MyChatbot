@@ -38,5 +38,13 @@
     "answer": "You can reach out through the contact section for email and LinkedIn. If you share your email in this chat, Shubhanshu can follow up directly.",
     "tags": ["contact", "recruiter_interest"],
     "relatedLinks": []
+  },
+  {
+    "id": "faq-workplace",
+    "question": "Where does he currently work?",
+    "intent": "experience",
+    "answer": "He currently works as a Test Consultant at Tata Consultancy Services (TCS), supporting the Deutsche Bank engagement in London, UK.",
+    "tags": ["experience", "current_role", "company", "career_summary"],
+    "relatedLinks": ["https://www.linkedin.com/in/shubhanshu-rastogi"]
   }
 ]

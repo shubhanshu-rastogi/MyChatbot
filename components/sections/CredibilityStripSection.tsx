@@ -10,7 +10,7 @@ export function CredibilityStripSection() {
         {credibilitySignals.map((signal, index) => (
           <motion.article
             key={signal.id}
-            initial={{ opacity: 0, y: 10 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}

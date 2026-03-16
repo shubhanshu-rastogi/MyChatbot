@@ -32,11 +32,51 @@ describe("intentDetectionService", () => {
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 
+  it("maps courtesy messages to greeting intent", () => {
+    const normalization = normalizeInput("thanks for the help");
+    const result = detectIntent(normalization);
+
+    expect(result.intent).toBe("greeting");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
   it("maps self-reference questions to about_me intent", () => {
     const normalization = normalizeInput("tell me about yourself");
     const result = detectIntent(normalization);
 
     expect(result.intent).toBe("about_me");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it("maps assistant identity questions to about_me intent", () => {
+    const normalization = normalizeInput("what is your name?");
+    const result = detectIntent(normalization);
+
+    expect(result.intent).toBe("about_me");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it("maps workplace questions to experience intent", () => {
+    const normalization = normalizeInput("where do you work?");
+    const result = detectIntent(normalization);
+
+    expect(result.intent).toBe("experience");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it("detects direct contact phrasing without requiring prompt chips", () => {
+    const normalization = normalizeInput("how can I contact you?");
+    const result = detectIntent(normalization);
+
+    expect(result.intent).toBe("contact");
+    expect(result.confidence).toBeGreaterThan(0.9);
+  });
+
+  it("detects recruiter interest from contact + role phrasing", () => {
+    const normalization = normalizeInput("Can I connect with him about a role?");
+    const result = detectIntent(normalization);
+
+    expect(result.intent).toBe("recruiter_interest");
     expect(result.confidence).toBeGreaterThan(0.9);
   });
 

@@ -1,9 +1,12 @@
-import Link from "next/link";
 import { profileInfo } from "@/data/profile";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
+const emailHref = `mailto:${profileInfo.contact.email}?subject=${encodeURIComponent(
+  "Connecting from shubhanshurastogi.it.com"
+)}`;
+
 const links = [
-  { label: "Email", href: `mailto:${profileInfo.contact.email}` },
+  { label: "Email", href: emailHref },
   { label: "LinkedIn", href: profileInfo.contact.linkedIn },
   { label: "GitHub", href: profileInfo.contact.github },
   { label: "Resume / CV", href: profileInfo.contact.resumeUrl }
@@ -21,7 +24,7 @@ export function ContactSection() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {links.map((item) => (
-            <Link
+            <a
               key={item.label}
               href={item.href}
               target={item.href.startsWith("http") ? "_blank" : undefined}
@@ -29,7 +32,7 @@ export function ContactSection() {
               className="rounded-2xl border border-white/10 bg-base-900/60 px-5 py-4 text-sm font-medium text-slate-200 transition hover:border-white/25 hover:bg-base-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
             >
               {item.label}
-            </Link>
+            </a>
           ))}
         </div>
 

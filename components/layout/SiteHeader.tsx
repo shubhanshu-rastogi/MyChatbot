@@ -14,7 +14,7 @@ const navItems = [
 export function SiteHeader() {
   return (
     <motion.header
-      initial={{ y: -20, opacity: 0 }}
+      initial={false}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="sticky top-0 z-30 border-b border-white/10 bg-base-950/70 backdrop-blur-xl"
@@ -36,6 +36,20 @@ export function SiteHeader() {
           ))}
         </nav>
       </div>
+
+      <nav aria-label="Primary mobile" className="border-t border-white/10 md:hidden">
+        <div className="mx-auto flex w-full max-w-7xl gap-2 overflow-x-auto px-4 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {navItems.map((item) => (
+            <Link
+              key={`mobile-${item.href}`}
+              href={item.href}
+              className="whitespace-nowrap rounded-full border border-white/15 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </motion.header>
   );
 }
